@@ -1,4 +1,7 @@
 ﻿using GraphQL.Demo.Api.Schema.Queries;
+using GraphQL.Demo.Api.Schema.Subscriptions;
+using HotChocolate.Subscriptions;
+using System.Threading.Tasks;
 
 namespace GraphQL.Demo.Api.Schema.Mutations
 {
@@ -9,9 +12,9 @@ namespace GraphQL.Demo.Api.Schema.Mutations
         {
             _courcses = new List<CourseResult>();
         }
-        public CourseResult CreateCourse(CourseInputType courseInput)
+        public async Task<CourseResult> CreateCourse(CourseInputType courseInput, [Service] ITopicEventSender topicEventSender)
         {
-            CourseResult courseType = new CourseResult()
+            CourseResult course = new CourseResult()
             {
                 Id = Guid.NewGuid(),
                 Name = courseInput.Name,
@@ -19,23 +22,31 @@ namespace GraphQL.Demo.Api.Schema.Mutations
                 InstructorId = courseInput.InstructorId,
 
             };
-            _courcses.Add(courseType);
-            return courseType;
+            _courcses.Add(course);
+            await topicEventSender.SendAsync(nameof(Subscription.CourseCreated), course);
+            return course;
         }
 
 
-        public CourseResult UpdateCourse(Guid id, CourseInputType courseInput)
+        public async Task<CourseResult> UpdateCourse(Guid id, CourseInputType courseInput, [Service] ITopicEventSender topicEventSender)
         {
-            CourseResult courseResult = _courcses.FirstOrDefault(c => c.Id == id);
-            if (courseResult == null)
+            CourseResult course = _courcses.FirstOrDefault(c => c.Id == id);
+            if (course == null)
             {
                 throw new GraphQLException(new Error("404 Course Not Found", "404"));
             }
-            courseResult.Name = courseInput.Name;
-            courseResult.Subject = courseInput.Subject;
-            courseResult.Id = id;
-            courseResult.InstructorId = courseInput.InstructorId;
-            return courseResult;
+            course.Name = courseInput.Name;
+            course.Subject = courseInput.Subject;
+            course.Id = id;
+            course.InstructorId = courseInput.InstructorId;
+
+
+            //Custome Topic 
+
+            string updateCourseTopic = $"{course.Id}_{nameof(Subscription.CourseUpdated)}";
+            await topicEventSender.SendAsync(updateCourseTopic, course);
+
+            return course;
         }
 
         public bool DeleteCourse(Guid id)
