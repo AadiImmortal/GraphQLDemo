@@ -10,12 +10,13 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 
-#region[GraphQL]
+#region[GraphQL Configure]
 builder.Services.AddGraphQLServer()
                 .AddQueryType<Query>()
                 .AddMutationType<Mutation>()
                 .AddSubscriptionType<Subscription>()
-                .AddInMemorySubscriptions();
+                .AddInMemorySubscriptions()
+                .AddFiltering();
 
 #endregion
 

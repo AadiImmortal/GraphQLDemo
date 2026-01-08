@@ -361,3 +361,16 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+#Database File 
+.db
+.db-shm
+.db-wal
+/GraphQL.Demo.Api/school.db
+/GraphQL.Demo.Api/school.db-shm
+/GraphQL.Demo.Api/school.db-wal
+/GraphQL.Demo.Api/school.db
+/GraphQL.Demo.Api/school.db-shm
+/GraphQL.Demo.Api/school.db
+/.gitignore
+/GraphQL.Demo.Api/school.db

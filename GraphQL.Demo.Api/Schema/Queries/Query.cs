@@ -1,10 +1,11 @@
 ﻿using Bogus;
 using GraphQL.Demo.Api.DTOs;
 using GraphQL.Demo.Api.Models;
-using GraphQL.Demo.Api.Services.Courses;
-using System.Reflection.Metadata.Ecma335;
-using HotChocolate.Data;
+using GraphQL.Demo.Api.Schema.Filters;
 using GraphQL.Demo.Api.Services;
+using GraphQL.Demo.Api.Services.Courses;
+using HotChocolate.Data;
+using System.Reflection.Metadata.Ecma335;
 
 namespace GraphQL.Demo.Api.Schema.Queries
 {
@@ -16,7 +17,7 @@ namespace GraphQL.Demo.Api.Schema.Queries
         {
             _coursesRepository = coursesRepository;
         }
-        [UsePaging(IncludeTotalCount = true, DefaultPageSize = 5)]
+       
         public async Task<IEnumerable<CourseType>> GetCourses()
         {
             try
@@ -40,6 +41,7 @@ namespace GraphQL.Demo.Api.Schema.Queries
 
 
         [UsePaging(IncludeTotalCount = true, DefaultPageSize = 5)]
+        [UseFiltering(typeof(CourseFilterType))]
         public async Task<IQueryable<CourseType>> GetPaginatedCourses(SchoolDbContext schoolDbContext)
         {
 
