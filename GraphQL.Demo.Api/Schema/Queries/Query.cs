@@ -42,6 +42,7 @@ namespace GraphQL.Demo.Api.Schema.Queries
 
 
         [UsePaging(IncludeTotalCount = true, DefaultPageSize = 5)]
+        [UseProjection]
         [UseFiltering(typeof(CourseFilterType))]
         [UseSorting(typeof(CourseSortType))]
         public async Task<IQueryable<CourseType>> GetPaginatedCourses(SchoolDbContext schoolDbContext)
